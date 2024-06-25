@@ -1,0 +1,6 @@
+@NorthwindTraders.WebApi_HostAddress = http://localhost:5035
+
+GET {{NorthwindTraders.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
