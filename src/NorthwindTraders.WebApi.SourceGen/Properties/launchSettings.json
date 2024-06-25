@@ -3,7 +3,7 @@
   "profiles": {
     "DebugRoslynSourceGenerator": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../../NorthwindTraders.WebApi/NorthwindTraders.WebApi.csproj"
+      "targetProject": "../NorthwindTraders.WebApi/NorthwindTraders.WebApi.csproj"
     }
   }
 }

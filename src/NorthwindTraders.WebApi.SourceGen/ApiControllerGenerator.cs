@@ -74,14 +74,15 @@ public class ApiControllerGenerator : IIncrementalGenerator
         var serviceTypeValue = attribute.NamedArguments
             .FirstOrDefault(x => x.Key == "ServiceType").Value
             .Value as INamedTypeSymbol ?? classSymbol;
-        
+
         return new ControllerToGenerate()
         {
             Namespace = classSymbol.ContainingNamespace.ToString(),
             ClassName = classSymbol.Name,
             EntityName = nameOverride,
             ServiceTypeFullyQualifiedName = serviceTypeValue.ToDisplayString(),
-            Methods = [
+            Methods =
+            [
                 // get all interfaces on the depending on how the developer is implementing interfaces
                 // our types might not be directly on the symbol
                 ..classSymbol.AllInterfaces.Where(IsKnownInterfaceType)
@@ -129,12 +130,31 @@ public class ApiControllerGenerator : IIncrementalGenerator
                     arg.TypeArguments[0].ToDisplayString()
                 ]
             },
+            "IGetHandler`2" => new MethodToGenerate()
+            {
+                InterfaceName = "IGetHandler",
+                QualifiedTypeParameters =
+                [
+                    arg.TypeArguments[0].ToDisplayString(),
+                    arg.TypeArguments[1].ToDisplayString()
+                ]
+            },
             "IGetListHandler`1" => new MethodToGenerate()
             {
                 InterfaceName = "IGetListHandler",
                 QualifiedTypeParameters =
                 [
-                    arg.TypeArguments[0].ToDisplayString()
+                    // arg parameter type (from base interface)
+                    arg.TypeArguments[0].ToDisplayString(),
+                ]
+            },
+            "IGetListHandler`2" => new MethodToGenerate()
+            {
+                InterfaceName = "IGetListHandler",
+                QualifiedTypeParameters =
+                [
+                    arg.TypeArguments[0].ToDisplayString(),
+                    arg.TypeArguments[1].ToDisplayString()
                 ]
             },
             "ICreateHandler`2" => new MethodToGenerate()
@@ -154,10 +174,27 @@ public class ApiControllerGenerator : IIncrementalGenerator
                     arg.TypeArguments[0].ToDisplayString()
                 ]
             },
+            "IUpdateHandler`2" => new MethodToGenerate()
+            {
+                InterfaceName = "IUpdateHandler",
+                QualifiedTypeParameters =
+                [
+                    arg.TypeArguments[0].ToDisplayString(),
+                    arg.TypeArguments[1].ToDisplayString()
+                ]
+            },
             "IDeleteHandler" => new MethodToGenerate()
             {
                 InterfaceName = "IDeleteHandler",
-                QualifiedTypeParameters = []
+                QualifiedTypeParameters =[]
+            },
+            "IDeleteHandler`1" => new MethodToGenerate()
+            {
+                InterfaceName = "IDeleteHandler",
+                QualifiedTypeParameters =
+                [
+                    arg.TypeArguments[0].ToDisplayString()
+                ]
             },
             "ISaveHandler`1" => new MethodToGenerate()
             {
@@ -206,24 +243,43 @@ public class ApiControllerGenerator : IIncrementalGenerator
             .AppendLine(
                 $"public class {generateInfo.ClassName}Controller({generateInfo.ServiceTypeFullyQualifiedName} service) : ControllerBase")
             .AppendLine("{");
-
+        
         foreach (var method in generateInfo.Methods)
         {
             sourceText.AppendLine();
-
+        
             if (method.InterfaceName == "IGetHandler")
             {
                 sourceText
-                    .AppendLine($"\t[HttpGet(\"/api/{generateInfo.EntityName}.get\")]")
-                    .AppendLine($"\tpublic async Task<ActionResult<{method.QualifiedTypeParameters[0]}>> Get(int id)")
-                    .AppendLine("\t\t=> Ok(await service.GetAsync(id, default));");
+                    .AppendLine($"\t[HttpGet(\"/api/{generateInfo.EntityName}.get\")]");
+                if (method.QualifiedTypeParameters.Count == 1)
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<ActionResult<{method.QualifiedTypeParameters[0]}>> Get(int id)")
+                        .AppendLine("\t\t=> Ok(await service.GetAsync(id, default));");
+                }
+                else if(method.QualifiedTypeParameters.Count == 2)
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<ActionResult<{method.QualifiedTypeParameters[1]}>> Get({method.QualifiedTypeParameters[0]} args)")
+                        .AppendLine("\t\t=> Ok(await service.GetAsync(args, default));");
+                }
             }
             else if (method.InterfaceName == "IGetListHandler")
             {
-                sourceText.AppendLine($"\t[HttpGet(\"/api/{generateInfo.EntityName}.list\")]")
-                    .AppendLine(
-                        $"\tpublic async Task<ActionResult<IReadOnlyList<{method.QualifiedTypeParameters[0]}>>> GetList()")
-                    .AppendLine("\t\t=> Ok(await service.GetListAsync(default));");
+                sourceText.AppendLine($"\t[HttpGet(\"/api/{generateInfo.EntityName}.list\")]");
+                if (method.QualifiedTypeParameters.Count == 1)
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<ActionResult<IReadOnlyList<{method.QualifiedTypeParameters[0]}>>> GetList()")
+                        .AppendLine("\t\t=> Ok(await service.GetListAsync(default));");
+                }
+                else if (method.QualifiedTypeParameters.Count == 2)
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<ActionResult<IReadOnlyList<{method.QualifiedTypeParameters[1]}>>> GetList({method.QualifiedTypeParameters[0]} args)")
+                        .AppendLine("\t\t=> Ok(await service.GetListAsync(args, default));");
+                }
             }
             else if (method.InterfaceName == "ICreateHandler")
             {
@@ -237,36 +293,58 @@ public class ApiControllerGenerator : IIncrementalGenerator
             }
             else if (method.InterfaceName == "IUpdateHandler")
             {
-                sourceText.AppendLine($"\t[HttpPost(\"/api/{generateInfo.EntityName}.update\")]")
-                    .AppendLine(
-                        $"\tpublic async Task<NoContentResult> Update(int id, {method.QualifiedTypeParameters[0]} request)")
-                    .AppendLine("\t{")
-                    .AppendLine("\t\tawait service.UpdateAsync(id, request, default);")
-                    .AppendLine("\t\treturn NoContent();")
+                sourceText.AppendLine($"\t[HttpPost(\"/api/{generateInfo.EntityName}.update\")]");
+                if (method.QualifiedTypeParameters.Count == 1)
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<NoContentResult> Update(int id, {method.QualifiedTypeParameters[0]} request)")
+                        .AppendLine("\t{")
+                        .AppendLine("\t\tawait service.UpdateAsync(id, request, default);");
+                }
+                else
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<NoContentResult> Update({method.QualifiedTypeParameters[0]} args, {method.QualifiedTypeParameters[1]} request)")
+                        .AppendLine("\t{")
+                        .AppendLine("\t\tawait service.UpdateAsync(args, request, default);");
+                }
+                sourceText.AppendLine("\t\treturn NoContent();")
                     .AppendLine("\t}");
             }
             else if (method.InterfaceName == "IDeleteHandler")
             {
-                sourceText.AppendLine($"\t[HttpPost(\"/api/{generateInfo.EntityName}.delete\")]")
-                    .AppendLine($"\tpublic async Task<NoContentResult> Delete(int id)")
-                    .AppendLine("\t{")
-                    .AppendLine("\t\tawait service.DeleteAsync(id, default);")
-                    .AppendLine("\t\treturn NoContent();")
+                sourceText.AppendLine($"\t[HttpPost(\"/api/{generateInfo.EntityName}.delete\")]");
+                if (method.QualifiedTypeParameters.Count == 1)
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<NoContentResult> Delete({method.QualifiedTypeParameters[0]} args)")
+                        .AppendLine("\t{")
+                        .AppendLine("\t\tawait service.DeleteAsync(args, default);");
+                }
+                else
+                {
+                    sourceText.AppendLine(
+                            $"\tpublic async Task<NoContentResult> Delete(int id)")
+                        .AppendLine("\t{")
+                        .AppendLine("\t\tawait service.DeleteAsync(id, default);");
+                }
+                sourceText.AppendLine("\t\treturn NoContent();")
                     .AppendLine("\t}");
             }
             else if (method.InterfaceName == "ISaveHandler")
             {
                 sourceText.AppendLine($"\t[HttpPost(\"/api/{generateInfo.EntityName}.save\")]")
-                    .AppendLine($"\tpublic async Task<NoContentResult> Save({method.QualifiedTypeParameters[0]} request)")
+                    .AppendLine(
+                        $"\tpublic async Task<NoContentResult> Save({method.QualifiedTypeParameters[0]} request)")
                     .AppendLine("\t{")
                     .AppendLine("\t\tawait service.SaveAsync(request, default);")
                     .AppendLine("\t\treturn NoContent();")
                     .AppendLine("\t}");
             }
         }
-
+        
         sourceText.AppendLine("}");
-
+        
         context.AddSource($"{generateInfo.ClassName}Controller.g.cs", sourceText.ToString());
     }
 
@@ -303,13 +381,25 @@ using System.Threading.Tasks;
 
 namespace NorthwindTraders.WebApi.SourceGen;
 
+public interface IGetHandler<TArgs, TResponse>
+    where TResponse : class
+{
+    Task<TResponse> GetAsync(TArgs args, CancellationToken cancellationToken);
+}
+
 public interface IGetHandler<TResponse>
     where TResponse : class
 {
     Task<TResponse> GetAsync(int id, CancellationToken cancellationToken);
 }
 
-public interface IGetListHandler<TResponse> where TResponse : class
+public interface IGetListHandler<TArgs, TResponse> where TResponse : class
+{
+    Task<IReadOnlyList<TResponse>> GetListAsync(TArgs args, CancellationToken cancellationToken);
+}
+
+public interface IGetListHandler<TResponse>
+    where TResponse : class
 {
     Task<IReadOnlyList<TResponse>> GetListAsync(CancellationToken cancellationToken);
 }
@@ -321,10 +411,21 @@ public interface ICreateHandler<in TRequest, TResponse> : IGetHandler<TResponse>
     Task<int> CreateAsync(TRequest request, CancellationToken cancellationToken);
 }
 
+public interface IUpdateHandler<TArgs, in TRequest>
+    where TRequest : class
+{
+    Task UpdateAsync(TArgs args, TRequest request, CancellationToken cancellationToken);
+}
+
 public interface IUpdateHandler<in TRequest>
     where TRequest : class
 {
     Task UpdateAsync(int id, TRequest request, CancellationToken cancellationToken);
+}
+
+public interface IDeleteHandler<TArgs>
+{
+    Task DeleteAsync(TArgs id, CancellationToken cancellationToken);
 }
 
 public interface IDeleteHandler

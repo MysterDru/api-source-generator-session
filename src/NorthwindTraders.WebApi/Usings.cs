@@ -1,0 +1,1 @@
+global using NorthwindTraders.WebApi.SourceGen;
