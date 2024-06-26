@@ -8,9 +8,7 @@ using NorthwindTraders.WebApi.Infrastructure.Exceptions;
 
 namespace NorthwindTraders.WebApi.Features.Customers;
 
-public partial interface ICustomersService;
-
-partial interface ICustomersService : IGetListHandler<CustomerSummaryResponse>,
+public partial interface ICustomersService : IGetListHandler<CustomerSummaryResponse>,
 	IGetHandler<string, CustomerDetailResponse>,
 	ISaveHandler<SaveCustomerRequest>,
 	IDeleteHandler<string>;

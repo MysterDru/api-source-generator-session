@@ -9,10 +9,9 @@ using NorthwindTraders.WebApi.Infrastructure.Exceptions;
 
 namespace NorthwindTraders.WebApi.Features.Categories;
 
-public partial interface ICategoriesService : IGetHandler<CategorySummaryResponse>,
+public interface ICategoriesService : IGetHandler<CategorySummaryResponse>,
 	IGetListHandler<CategorySummaryResponse>; 
 
-[GenerateAutomaticInterface]
 [RegisterTransient<ICategoriesService>]
 [GenerateController(Name= "category", ServiceType = typeof(ICategoriesService))]
 public sealed class CategoriesService(ILogger<CategoriesService> logger, INorthwindRepository repository)

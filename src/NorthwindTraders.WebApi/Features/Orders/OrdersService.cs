@@ -10,9 +10,7 @@ using NorthwindTraders.WebApi.Infrastructure.Exceptions;
 
 namespace NorthwindTraders.WebApi.Features.Orders;
 
-public partial interface IOrdersService;
-
-partial interface IOrdersService : IGetHandler<OrderResponse>,
+public interface IOrdersService : IGetHandler<OrderResponse>,
 	IGetListHandler<GetOrderListRequest, OrderResponse>; 
 
 [RegisterTransient<IOrdersService>]
