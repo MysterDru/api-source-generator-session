@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "before", "before", "{9C308328-D89E-4177-B714-B5886461E9D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "after", "after", "{DBC9CB6B-BC09-4C65-A480-00E4B57909F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthwindTraders.WebApi.SourceGen", "after\NorthwindTraders.WebApi.SourceGen\NorthwindTraders.WebApi.SourceGen.csproj", "{D33D2CB3-4213-4251-8BA9-9F965D23B8B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthwindTraders.WebApi", "after\NorthwindTraders.WebApi\NorthwindTraders.WebApi.csproj", "{4D8EEC41-3D5A-4E1E-9958-F01ACEDF677C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthwindTraders.WebApi", "before\NorthwindTraders.WebApi\NorthwindTraders.WebApi.csproj", "{8AF52813-1C1C-403D-9335-921C3CCD5259}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D33D2CB3-4213-4251-8BA9-9F965D23B8B1} = {DBC9CB6B-BC09-4C65-A480-00E4B57909F1}
+		{4D8EEC41-3D5A-4E1E-9958-F01ACEDF677C} = {DBC9CB6B-BC09-4C65-A480-00E4B57909F1}
+		{8AF52813-1C1C-403D-9335-921C3CCD5259} = {9C308328-D89E-4177-B714-B5886461E9D1}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D33D2CB3-4213-4251-8BA9-9F965D23B8B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D33D2CB3-4213-4251-8BA9-9F965D23B8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D33D2CB3-4213-4251-8BA9-9F965D23B8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D33D2CB3-4213-4251-8BA9-9F965D23B8B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D8EEC41-3D5A-4E1E-9958-F01ACEDF677C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D8EEC41-3D5A-4E1E-9958-F01ACEDF677C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D8EEC41-3D5A-4E1E-9958-F01ACEDF677C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D8EEC41-3D5A-4E1E-9958-F01ACEDF677C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AF52813-1C1C-403D-9335-921C3CCD5259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AF52813-1C1C-403D-9335-921C3CCD5259}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AF52813-1C1C-403D-9335-921C3CCD5259}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AF52813-1C1C-403D-9335-921C3CCD5259}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
