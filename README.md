@@ -1,10 +1,17 @@
 # Generated API Controllers With Roslyn Generators
 
-This repository contains the sample solution to accompany my talk: **Stop Copy Pasting Code! Use Source Generators Instead".
+This repository contains the sample solution(s) to accompany my talk: **Stop Copy Pasting Code! Use Source Generators Instead".
 
-The solution is composed of a generator project and .net8 sample web api app built on top of the [Northwinds Sample Database](https://github.com/microsoft/sql-server-samples/blob/master/samples/databases/northwind-pubs/readme.md). If you want to run the Web Api you will need to setup and deploy the database. There is a schema and data seeder script in the [Database](./src/Database/) directory. However, the source generator will work without running the API. Be sure to update the connection string as appropriate in `appsettings.json`.
+The solutions contain 2 variants of a web api project built on top of the [Northwinds Sample Database](https://github.com/microsoft/sql-server-samples/blob/master/samples/databases/northwind-pubs/readme.md). If you want to run the Web Api you will need to setup and deploy the database. There is a schema and data seeder script in the [Database](./src/Database/) directory. If you want to run either API,  be sure to update the connection strings as appropriate in `appsettings.json`.
 
-The included source generator is designed to allow composing a data access service with interfaces that are directly associated to an API Controller structure. 
+
+### Before
+
+The before solution contains code without a source generator. Each controller and service are implemented manually.
+
+### After
+
+The after solution contains code with a source generator. The included source generator is designed to allow composing a data access service with interfaces that are directly associated to an API Controller structure. 
 
 To use, decorate a service class with an attribute:
 

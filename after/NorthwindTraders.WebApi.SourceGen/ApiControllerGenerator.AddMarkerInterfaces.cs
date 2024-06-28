@@ -1,5 +1,9 @@
 namespace NorthwindTraders.WebApi.SourceGen;
 
+/// <remarks>
+///     This partial class file contains the logic to generate marker interfaces
+///     that are used to determine the controller actions to generate.
+/// </remarks>
 public partial class ApiControllerGenerator
 {
     private static void AddMarkerInterfaces(IncrementalGeneratorPostInitializationContext postInitializationContext)

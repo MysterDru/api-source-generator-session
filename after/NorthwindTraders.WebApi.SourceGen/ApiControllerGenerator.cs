@@ -1,11 +1,23 @@
 namespace NorthwindTraders.WebApi.SourceGen;
 
+/// <summary>
+///     This partial class contains the primary entry point and
+///     implementation of the generator.
+/// </summary>
 [Generator]
 public partial class ApiControllerGenerator : IIncrementalGenerator
 {
+    /// <summary>
+    ///     The initialize method is broken into 3 steps:
+    ///     1. Add the marker attribute and interfaces to the referencing project
+    ///     2. Find classes annotated with the [GenerateController] attribute and create
+    ///         a value type containing the metadata needed to generate the controller
+    ///     3. Generate the source code for the controller
+    /// </summary>
+    /// <param name="context"></param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Step 1: Add the marker attribute and interfaces to the referencing project:
+        // Step 1
         context.RegisterPostInitializationOutput(static initializationContext =>
         {
             // add [GenerateController] attribute
@@ -15,21 +27,16 @@ public partial class ApiControllerGenerator : IIncrementalGenerator
             AddMarkerInterfaces(initializationContext);
         });
 
-        // Step 2: When the generator is triggered by the compilation, find classes annotated with the [GenerateController] attribute
+        // Step 2
         var pipeline = context.SyntaxProvider
             .ForAttributeWithMetadataName(
-                "NorthwindTraders.WebApi.SourceGen.GenerateControllerAttribute",
-
-                // ensure that the node is a concrete class
-                IsEligibleSyntaxNode,
-
-                // transform the syntax node into value type containing the metadata needed to generate the controller
-                // this result must be a value type, as it will be cached by the generator via IEquatable
-                TransformSemanticTarget)
+                fullyQualifiedMetadataName: "NorthwindTraders.WebApi.SourceGen.GenerateControllerAttribute",
+                predicate: IsEligibleSyntaxNode,
+                transform: TransformSemanticTarget)
             .Where(static x => x is not null)
             .Select(static (x, _) => x!);
 
-        // Step 3: For any classes that are found, generate the source code for the controller
+        // Step 3
         context.RegisterSourceOutput(pipeline, GenerateController);
     }
 }

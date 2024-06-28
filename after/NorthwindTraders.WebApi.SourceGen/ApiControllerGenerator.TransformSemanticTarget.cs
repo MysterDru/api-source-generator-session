@@ -3,6 +3,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace NorthwindTraders.WebApi.SourceGen;
 
+/// <remarks>
+///     This partial class contains the method to read the semantic model and transform
+///     it into a <see cref="ControllerToGenerate"/> instance.
+///
+///     The result of this method must be value type as it will be cached by the
+///     incremental generator.
+/// </remarks>
 public partial class ApiControllerGenerator
 {
     private static ControllerToGenerate? TransformSemanticTarget(

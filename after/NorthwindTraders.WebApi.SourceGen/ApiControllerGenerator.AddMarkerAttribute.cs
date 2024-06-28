@@ -1,5 +1,8 @@
 namespace NorthwindTraders.WebApi.SourceGen;
 
+/// <remarks>
+///		This partial class contains the logic to generate the <c>GenerateControllerAttribute</c> attribute.
+/// </remarks>
 public partial class ApiControllerGenerator
 {
     private static void AddMarkerAttribute(IncrementalGeneratorPostInitializationContext postInitializationContext)
